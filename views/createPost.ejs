@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header (reuse from main page if needed) -->
+    <header class="bg-white shadow-lg p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <!-- Replace LinkedIn logo with Newsify Text -->
+            <h1 class="text-2xl font-bold text-blue-500">Newsify</h1>
+            <input type="text" placeholder="Search" class="px-4 py-2 rounded-lg bg-gray-200 focus:outline-none">
+        </div>
+        <nav class="flex items-center space-x-8">
+            <!-- Home Icon -->
+            <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
+                <img src="home.svg" alt="Home Icon" class="h-6 w-6">
+                <span class="text-xs">Home</span>
+            </div>
+            <!-- Profile Icon -->
+            <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
+                <img src="user.png" alt="Profile" class="w-8 h-8 rounded-full">
+                <span class="text-xs">Me</span>
+            </div>
+        </nav>
+    </header>
+    
+
+    <!-- Main Content -->
+    <main class="max-w-2xl mx-auto mt-6 px-4">
+        <!-- Create Post Section -->
+        <section class="bg-white p-6 rounded-lg shadow-md">
+            <h2 class="text-xl font-semibold mb-4">Create a Post</h2>
+            
+            <!-- Post Form -->
+            <form class="space-y-4">
+                <!-- Text Input -->
+                <div>
+                    <label for="postContent" class="text-gray-700">What's on your mind?</label>
+                    <textarea id="postContent" rows="4" placeholder="Write something here..." class="w-full mt-2 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+
+                <!-- Image/Video Upload -->
+                <div>
+                    <label class="text-gray-700">Add images or videos:</label>
+                    <input type="file" multiple accept="image/*,video/*" class="w-full mt-2 p-2 border rounded-lg cursor-pointer focus:outline-none">
+                    <p class="text-sm text-gray-500 mt-1">You can upload multiple files.</p>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="text-right">
+                    <button type="submit" class="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">Post</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+</body>
+</html>
