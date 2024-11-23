@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Navbar -->
+    <header class="bg-white shadow-md p-4">
+        <div class="flex justify-between items-center max-w-6xl mx-auto">
+            <h1 class="text-2xl font-bold text-blue-500">Newsify</h1>
+            <nav class="flex space-x-6">
+                <a href="/" class="text-gray-700 hover:text-blue-500">Home</a>
+                <a href="/users/logout" class="text-gray-700 hover:text-blue-500">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Profile Section -->
+    <section class="bg-white shadow-md mt-6 p-6 max-w-4xl mx-auto rounded-lg">
+        <div class="flex items-center">
+            <div class="w-24 h-24 rounded-full overflow-hidden bg-gray-200">
+                <% if (user.profilePicture) { %>
+                    <img src="data:image/png;base64,<%= user.profilePicture.toString('base64') %>" alt="Profile Picture" class="w-full h-full object-cover">
+                <% } else { %>
+                    <img src="https://via.placeholder.com/150" alt="Default Profile" class="w-full h-full object-cover">
+                <% } %>
+            </div>
+            <div class="ml-6">
+                <h2 class="text-2xl font-bold text-gray-700"><%= user.name %></h2>
+                <p class="text-gray-600"><%= user.bio || 'No bio available' %></p>
+                <p class="text-gray-500 mt-2"><%= user.email %></p>
+                <button class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                    <a href="/users/userprofile/edit">Edit Profile</a>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- User Posts -->
+    <section class="mt-8 max-w-4xl mx-auto space-y-6">
+        <h3 class="text-xl font-bold text-gray-700">Your Posts</h3>
+
+        <% if (user.posts.length > 0) { %>
+            <% user.posts.forEach(post => { %>
+                <div class="bg-white shadow-md p-4 rounded-lg">
+                    <!-- Post Header -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h4 class="text-lg font-semibold text-gray-700"><%= post.content.substring(0, 30) + '...' %></h4>
+                        <span class="text-sm text-gray-500"><%= new Date(post.createdAt).toLocaleDateString() %></span>
+                    </div>
+
+                    <!-- Post Media -->
+                    <% if (post.images.length > 0 || post.videos.length > 0) { %>
+                        <div class="flex space-x-4 overflow-auto">
+                            <% post.images.forEach(image => { %>
+                                <img src="data:image/png;base64,<%= image.toString('base64') %>" alt="Post Image" class="w-32 h-32 object-cover rounded-md">
+                            <% }) %>
+                            <% post.videos.forEach(video => { %>
+                                <video controls class="w-32 h-32 rounded-md">
+                                    <source src="data:video/<%= video.contentType %>;base64,<%= video.data.toString('base64') %>" type="<%= video.contentType %>">
+                                </video>
+                            <% }) %>
+                        </div>
+                    <% } %>
+
+                    <!-- Post Actions -->
+                    <div class="mt-4 flex justify-between items-center">
+                        <!-- <p class="text-gray-600"><%= post.likes.length %> Likes, <%= post.dislikes.length %> Dislikes</p> -->
+                        <button class="text-blue-500 hover:underline">
+                            <!-- <a href="/post/<%= post._id %>/edit">Edit Post</a> -->
+                        </button>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p class="text-gray-600">You have not created any posts yet.</p>
+        <% } %>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss"></script>
+</body>
+
+</html>

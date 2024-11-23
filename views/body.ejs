@@ -1,29 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Full Page Layout with Posts</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <link rel="stylesheet" href="/stylesheets/animation.css">
+    <style>.slick-prev, .slick-next { color: black; } .slick-prev:before, .slick-next:before { color: black; }</style>
 </head>
-
 <body class="bg-gray-100 flex justify-center space-x-4">
 
     <!-- Left Sidebar -->
     <aside class="bg-white shadow-lg w-1/4 p-4 h-screen sticky top-0">
         <div class="flex items-center mb-6">
-            <img src="https://via.placeholder.com/100" alt="Profile" class="w-16 h-16 rounded-full">
+            <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-blue-500">
+                <img src="data:image/png;base64,<%= user.profilePicture.toString('base64') %>" alt="Profile" class="w-full h-full object-cover">
+            </div>
+            <!-- <img src="data:image/png;base64,<%= user.profilePicture.toString('base64') %>" alt="Profile" class="w-16 h-16 rounded-full"> -->
             <div class="ml-4">
-                <p class="font-semibold">Username</p>
-                <p class="text-sm text-gray-500">user@example.com</p>
+                <p class="font-semibold "><%= Uname %></p>
+                <p class="text-sm text-gray-500"><%= Uemail%></p>
             </div>
         </div>
         <nav class="space-y-2">
-            <a href="#" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Profile</a>
-            <a href="#" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Settings</a>
-            <a href="#" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Create Post</a>
-            <a href="#" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Logout</a>
+            <a href="/users/userprofile" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Profile</a>
+            <!-- <a href="#" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Settings</a> -->
+            <a href="/post/createPost" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Create Post</a>
+            <a href="/users/logout" class="block text-gray-600 hover:bg-gray-200 p-2 rounded">Logout</a>
         </nav>
     </aside>
 
@@ -32,120 +40,151 @@
         <!-- Header -->
         <header class="bg-white shadow-lg p-4 flex items-center justify-between mb-4">
             <div class="flex items-center space-x-2">
-                <!-- Replace Logo with Newsify Text -->
                 <h1 class="text-2xl font-bold text-blue-500">Newsify</h1>
                 <input type="text" placeholder="Search" class="px-4 py-2 rounded-lg bg-gray-200 focus:outline-none">
             </div>
             <nav class="flex items-center space-x-8">
-                <!-- Icons for each nav item -->
                 <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
-                    <img src="home.svg" alt="Home" class="h-6 w-6">
-                    <span class="text-xs">Home</span>
-                </div>
-                <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M12 2a10 10 0 0 0-9 14.62V21a1 1 0 0 0 1.45.9l2.32-1.16A10 10 0 1 0 12 2zm-1 8h2v5h-2zm1 8a8 8 0 1 1 0-16 8 8 0 0 1 0 16z">
-                        </path>
-                    </svg>
-                    <span class="text-xs">Messaging</span>
+                    <img   src="https://www.svgrepo.com/show/134086/home.svg" alt="Home" class="h-6 w-6">
+                    <span  class="text-xs">Home</span>
                 </div>
             </nav>
         </header>
-        
 
-        <!-- Sample Post with Image -->
+        <!-- Flash Messages -->
+        <% if (successMessage.length > 0) { %>
+        <div class="flash-message bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
+            <p><%= successMessage %></p>
+        </div>
+        <% } %>
+        <% if (errorMessage.length > 0) { %>
+        <div class="flash-message bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">
+            <p><%= errorMessage %></p>
+        </div>
+        <% } %>
+
+        <!-- Loop through all posts -->
+        <% posts.forEach(post => { %>
         <div class="bg-white rounded-lg shadow-md p-4">
-            <!-- Header -->
+            <!-- Post Header -->
             <div class="flex items-center mb-4">
-                <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/150" alt="Profile">
+                <img class="w-10 h-10 rounded-full" src="<%= post.user.profilePicture ? 'data:image/png;base64,' + post.user.profilePicture.toString('base64') : 'https://via.placeholder.com/150' %>" 
+                 alt="Profile">
                 <div class="ml-3">
-                    <p class="font-semibold">Jane Doe</p>
-                    <p class="text-sm text-gray-500">3 hours ago</p>
+                    <a href="/users/<%= post.user._id %>"><p class="font-semibold"><%= post.user.name %></p></a>
+                    <p class="text-sm text-gray-500"><%= new Date(post.createdAt).toLocaleString() %></p>
                 </div>
             </div>
 
             <!-- Post Content -->
-            <p class="text-gray-700 mb-4">Exploring the beautiful landscapes on my recent trip!</p>
+            <p class="text-gray-700 mb-4"><%= post.content %></p>
 
-            <!-- Image Content -->
-            <img src="https://via.placeholder.com/600x400" alt="Landscape" class="rounded-lg w-full mb-4">
+            <!-- Post with Media -->
+            <% if (post.images.length> 0) { %>
+                <div class="mb-4">
+                    <% if (post.images.length> 1) { %> <!-- Only show slider if there are more than one image -->
+                        <div class="slider">
+                            <% post.images.forEach(image=> { %>
+                                <div>
+                                    <img src="data:image/jpeg;base64,<%= image.toString('base64') %>"
+                                        class="rounded-lg w-full h-auto">
+                                </div>
+                                <% }) %>
+                        </div>
+                        <% } else { %> <!-- If there's only one image, just show it normally -->
+                            <img src="data:image/jpeg;base64,<%= post.images[0].toString('base64') %>"
+                                class="rounded-lg w-full h-auto">
+                            <% } %>
+                </div>
+                <% } %>
+            
+                    <% if (post.videos.length> 0) { %>
+                        <div class="mb-4">
+                            <% if (post.videos.length> 1) { %> <!-- Only show slider if there are more than one video -->
+                                <div class="slider">
+                                    <% post.videos.forEach(video=> { %>
+                                        <div>
+                                            <video controls class="rounded-lg w-full mb-4">
+                                                <source
+                                                    src="data:<%= video.contentType %>;base64,<%= video.data.toString('base64') %>"
+                                                    type="<%= video.contentType %>">
+                                            </video>
+                                        </div>
+                                        <% }) %>
+                                </div>
+                                <% } else { %> <!-- If there's only one video, just show it normally -->
+                                    <video controls class="rounded-lg w-full mb-4">
+                                        <source
+                                            src="data:<%= post.videos[0].contentType %>;base64,<%= post.videos[0].data.toString('base64') %>"
+                                            type="<%= post.videos[0].contentType %>">
+                                    </video>
+                                    <% } %>
+                        </div>
+                        <% } %>
+                        <script type="text/javascript">
+                            $(document).ready(function(){
+                                $('.slider').slick({
+                                    dots: true,  // Add navigation dots
+                                    infinite: true,  // Loop through items
+                                    speed: 500,  // Transition speed
+                                    slidesToShow: 1,  // Show one slide at a time
+                                    slidesToScroll: 1  // Scroll one slide at a time
+                                });
+                            });
+                        </script>
+                        
 
-            <!-- Footer with Good/Bad, Like, Comment Feedback -->
+            <!-- Footer with Like/Dislike/True/False -->
             <div class="flex items-center justify-between mb-4">
                 <div class="flex space-x-4">
-                    <button class="text-green-500 hover:text-green-600">👍 Good</button>
-                    <button class="text-red-500 hover:text-red-600">👎 Bad</button>
-                    <button class="text-blue-500 hover:text-blue-600">❤️ Like</button>
+                    <button class="text-green-500 hover:text-green-600" onclick="vote('<%= post._id %>', 'true')">
+                        👍 True
+                    </button>
+                    <button class="text-red-500 hover:text-red-600" onclick="vote('<%= post._id %>', 'false')">
+                        👎 False
+                    </button>
                 </div>
-                <p class="text-gray-600 text-sm">90% of people find this post good.</p>
+                <p class="text-gray-600 text-sm">
+                    <%= post.trueVotes.length + post.falseVotes.length> 0
+                        ? Math.round((post.trueVotes.length / (post.trueVotes.length + post.falseVotes.length)) * 100) + '%'
+                        : 'No votes yet' %> people find this post true.
+                </p>
             </div>
 
             <!-- Comments Section -->
-            <div class="space-y-4">
-                <div>
-                    <input type="text" placeholder="Add a comment..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button class="text-blue-500 mt-2">Post Comment</button>
-                </div>
-
-                <!-- Comment -->
-                <div class="flex items-center space-x-2">
-                    <img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/50" alt="User">
-                    <div>
-                        <p class="font-semibold">Alice</p>
-                        <p class="text-gray-600">Great trip! Where was this taken?</p>
-                    </div>
+            <div class="mt-6">
+                <h3 class="text-lg font-semibold mb-4">Comments</h3>
+            
+                <!-- Form to Add a Comment -->
+                <form onsubmit="addComment('<%= post._id %>'); return false;" class="mb-4">
+                    <textarea id="comment-input" class="w-full border rounded p-2" rows="2"
+                        placeholder="Write a comment..."></textarea>
+                    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Post Comment</button>
+                </form>
+            
+                <!-- Display Comments -->
+                <div id="comments-container">
+                    <% post.comments.forEach(comment=> { %>
+                        <div class="flex items-start mb-4">
+                            <img class="w-8 h-8 rounded-full" src="data:image/png;base64,<%= comment.user.profilePicture.toString('base64') || 'https://via.placeholder.com/150' %>" alt="Profile">
+                            <div class="ml-3">
+                                <p class="font-semibold">
+                                    <%= comment.user.name %>
+                                </p>
+                                <p class="text-sm text-gray-600">
+                                    <%= comment.content %>
+                                </p>
+                                <p class="text-xs text-gray-400">
+                                    <%= new Date(comment.createdAt).toLocaleString() %>
+                                </p>
+                            </div>
+                        </div>
+                        <% }); %>
                 </div>
             </div>
+
         </div>
-
-        <!-- Sample Post with Video -->
-        <div class="bg-white rounded-lg shadow-md p-4 mt-6">
-            <!-- Header -->
-            <div class="flex items-center mb-4">
-                <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/150" alt="Profile">
-                <div class="ml-3">
-                    <p class="font-semibold">John Smith</p>
-                    <p class="text-sm text-gray-500">1 hour ago</p>
-                </div>
-            </div>
-
-            <!-- Post Content -->
-            <p class="text-gray-700 mb-4">Check out this quick tutorial I made!</p>
-
-            <!-- Video Content -->
-            <video controls class="rounded-lg w-full mb-4">
-                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-
-            <!-- Footer with Good/Bad, Like, Comment Feedback -->
-            <div class="flex items-center justify-between mb-4">
-                <div class="flex space-x-4">
-                    <button class="text-green-500 hover:text-green-600">👍 Good</button>
-                    <button class="text-red-500 hover:text-red-600">👎 Bad</button>
-                    <button class="text-blue-500 hover:text-blue-600">❤️ Like</button>
-                </div>
-                <p class="text-gray-600 text-sm">75% of people find this post good.</p>
-            </div>
-
-            <!-- Comments Section -->
-            <div class="space-y-4">
-                <div>
-                    <input type="text" placeholder="Add a comment..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <button class="text-blue-500 mt-2">Post Comment</button>
-                </div>
-
-                <!-- Comment -->
-                <div class="flex items-center space-x-2">
-                    <img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/50" alt="User">
-                    <div>
-                        <p class="font-semibold">Bob</p>
-                        <p class="text-gray-600">Nice tutorial! Looking forward to more!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <% }) %>
 
     </div>
 
@@ -167,7 +206,8 @@
             </div>
         </div>
     </aside>
-    <script src="../public/javascripts/multimedia.js"></script>
+    
+    <!-- <script src="../public/javascripts/multimedia.js"></script> -->
+    <script src="/javascripts/vote.js"></script>
 </body>
-
 </html>

@@ -49,8 +49,16 @@ const postSchema = new mongoose.Schema({
     updatedAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    trueVotes: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'  // Users who voted True
+    }],
+    falseVotes: [{
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User'  // Users who voted False
+    }]
 });
 
 
-module.exports = mongoose.connection("Post" , postSchema);
+module.exports = mongoose.model("Post" , postSchema);

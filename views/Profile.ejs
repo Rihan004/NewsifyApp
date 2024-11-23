@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile Page</title>
+    <title><%= user.name %> - Profile</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
@@ -11,21 +11,20 @@
     <!-- Header (from main page) -->
     <header class="bg-white shadow-lg p-4 flex items-center justify-between">
         <div class="flex items-center space-x-4">
-            <!-- Replace LinkedIn logo with Newsify Text -->
             <h1 class="text-2xl font-bold text-blue-500">Newsify</h1>
             <input type="text" placeholder="Search" class="px-4 py-2 rounded-lg bg-gray-200 focus:outline-none">
         </div>
         <nav class="flex items-center space-x-8">
             <!-- Home Icon -->
             <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
-                <img src="home.svg" alt="Home Icon" class="h-6 w-6">
+                <a href="/"><img src="https://www.svgrepo.com/show/134086/home.svg" alt="Home Icon" class="h-6 w-6"></a>
                 <span class="text-xs">Home</span>
             </div>
             <!-- Profile Icon -->
-            <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
-                <img src="user.png" alt="Profile" class="w-8 h-8 rounded-full">
+            <!-- <div class="flex flex-col items-center text-gray-600 hover:text-black cursor-pointer">
+                <img src="data:image/png;base64,<%= user.profilePicture.toString('base64') %>" alt="Profile" class="w-10 h-10 object-cover">
                 <span class="text-xs">Me</span>
-            </div>
+            </div> -->
         </nav>
     </header>
 
@@ -34,12 +33,12 @@
         <!-- Profile Header -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-6">
             <div class="flex items-center space-x-6">
-                <img src="https://via.placeholder.com/150" alt="Profile Picture" class="w-24 h-24 rounded-full">
+                <img src="<%= user.profilePicture ? 'data:image/png;base64,' + user.profilePicture.toString('base64') : 'https://via.placeholder.com/150' %>" alt="Profile Picture" class="w-24 h-24 rounded-full">
                 <div>
-                    <h1 class="text-2xl font-bold">Alex Johnson</h1>
-                    <p class="text-gray-600">Software Engineer at TechCorp</p>
-                    <p class="text-gray-500 text-sm">San Francisco, CA</p>
-                    <button class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Connect</button>
+                    <h1 class="text-2xl font-bold"><%= user.name %></h1>
+                    <p class="text-gray-600"><%= user.bio || 'No bio available' %></p>
+                    <p class="text-gray-500 text-sm"><%= user.location || 'Location not provided' %></p>
+                    <button class="mt-3 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Follow</button>
                 </div>
             </div>
         </div>
@@ -48,74 +47,35 @@
         <section class="bg-white p-6 rounded-lg shadow-md mb-6">
             <h2 class="text-xl font-semibold mb-2">About</h2>
             <p class="text-gray-700">
-                Enthusiastic Software Engineer with 5+ years of experience in web development and a passion for creating seamless user experiences. Currently working at TechCorp and constantly looking to learn and grow in the field.
+                <%= user.bio || 'This user has not written a bio yet.' %>
             </p>
-        </section>
-
-        <!-- Activity Overview -->
-        <section class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold mb-2">Activity</h2>
-            <div class="grid grid-cols-3 gap-4 text-center">
-                <div>
-                    <p class="text-2xl font-bold">245</p>
-                    <p class="text-gray-500">Connections</p>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold">1,350</p>
-                    <p class="text-gray-500">Post Views</p>
-                </div>
-                <div>
-                    <p class="text-2xl font-bold">60</p>
-                    <p class="text-gray-500">Likes</p>
-                </div>
-            </div>
         </section>
 
         <!-- User Posts -->
         <section>
             <h2 class="text-xl font-semibold mb-4">Posts</h2>
-            <!-- Sample Post -->
-            <div class="bg-white rounded-lg shadow-md p-4 mb-4">
-                <div class="flex items-center mb-2">
-                    <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/150" alt="Profile">
-                    <div class="ml-3">
-                        <p class="font-semibold">Alex Johnson</p>
-                        <p class="text-sm text-gray-500">Posted 1 day ago</p>
+            <% posts.forEach(post => { %>
+                <div class="bg-white rounded-lg shadow-md p-4 mb-4">
+                    <div class="flex items-center mb-2">
+                        <img class="w-10 h-10 rounded-full" src="<%= post.user.profilePicture ? 'data:image/png;base64,' + post.user.profilePicture.toString('base64') : 'https://via.placeholder.com/150' %>" alt="Profile">
+                        <div class="ml-3">
+                            <p class="font-semibold"><%= post.user.name %></p>
+                            <p class="text-sm text-gray-500">Posted <%= new Date(post.createdAt).toLocaleString() %></p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 mb-4"><%= post.content %></p>
+                    <% if (post.image) { %>
+                        <img src="<%= post.image %>" alt="Post Image" class="rounded-lg w-full h-auto mb-4">
+                    <% } %>
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-4">
+                            <button class="text-gray-600 hover:text-blue-500">👍 Like</button>
+                            <button class="text-gray-600 hover:text-blue-500">💬 Comment</button>
+                        </div>
+                        <p class="text-gray-500 text-sm"><%= post.likes.length %> likes • <%= post.comments.length %> comments</p>
                     </div>
                 </div>
-                <p class="text-gray-700 mb-4">Exciting news! I've just completed a new project that I'm really proud of. Check it out below!</p>
-                <img src="https://via.placeholder.com/600x400" alt="Post Image" class="rounded-lg w-full h-auto mb-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex space-x-4">
-                        <button class="text-gray-600 hover:text-blue-500">👍 Like</button>
-                        <button class="text-gray-600 hover:text-blue-500">💬 Comment</button>
-                    </div>
-                    <p class="text-gray-500 text-sm">120 likes • 34 comments</p>
-                </div>
-            </div>
-
-            <!-- Another Sample Post -->
-            <div class="bg-white rounded-lg shadow-md p-4">
-                <div class="flex items-center mb-2">
-                    <img class="w-10 h-10 rounded-full" src="https://via.placeholder.com/150" alt="Profile">
-                    <div class="ml-3">
-                        <p class="font-semibold">Alex Johnson</p>
-                        <p class="text-sm text-gray-500">Posted 3 days ago</p>
-                    </div>
-                </div>
-                <p class="text-gray-700 mb-4">Here’s a quick video tutorial on optimizing code for performance!</p>
-                <video controls class="rounded-lg w-full">
-                    <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <div class="flex items-center justify-between mt-4">
-                    <div class="flex space-x-4">
-                        <button class="text-gray-600 hover:text-blue-500">👍 Like</button>
-                        <button class="text-gray-600 hover:text-blue-500">💬 Comment</button>
-                    </div>
-                    <p class="text-gray-500 text-sm">90 likes • 22 comments</p>
-                </div>
-            </div>
+            <% }) %>
         </section>
     </main>
 
