@@ -11,6 +11,7 @@ The core functionality of **Newsify** allows users to:
 - **Engage with News**: Other users can interact with posted news by marking it as true or false, providing valuable insights into the credibility of the news, and building a trustworthy community of readers and reporters.
 - **Comment & Discuss**: Users can also leave comments on posts, sharing their opinions, and engaging in discussions about the news articles.
 - **Follow and Connect**: **Newsify** offers a social aspect, where users can follow each other, discover relevant content, and stay updated on the latest posts.
+  ![Screenshot 2024-11-23 234626](https://github.com/user-attachments/assets/8c2eaa1a-37e3-40f1-8d7c-56644f377701)
 
 ## Technologies Used:
 
